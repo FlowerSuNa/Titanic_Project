@@ -414,4 +414,183 @@ plt.show()
 
 ---
 
-###
+### Change the title name to integer
+
+```python
+def Name_to_number(data):
+    data['Mr'] = 0
+    data.loc[data['title_name'] == 'Mr.', 'Mr'] = 1
+
+    data['Mrs'] = 0
+    data.loc[data['title_name'] == 'Mrs.', 'Mrs'] = 1
+
+    data['Miss'] = 0
+    data.loc[data['title_name'] == 'Miss.', 'Miss'] = 1
+
+    data['Master'] = 0
+    data.loc[data['title_name'] == 'Master.', 'Master'] = 1
+
+    return data
+
+merged = Name_to_number(merged)
+```
+
+<br>
+
+### Fill the missing value of Embarked
+
+```python
+merged.loc[merged['Embarked'].isnull(), 'Embarked'] = 2
+```
+
+<br>
+
+### Do one-hot encoding
+
+```python
+temp = pd.get_dummies(merged.Embarked)
+temp.columns = ['E_Cherbourg', 'E_Queenstown', 'E_Southampton']
+merged = pd.concat([merged, temp], axis=1)
+```
+
+<br>
+---
+
+### Draw boxplots about Age
+
+```python
+def hist(data, a, hue, col=None):
+    g =  sns.FacetGrid(data, hue=hue, col=col, size=7, palette='husl')
+    g = g.map(sns.distplot, a, hist_kws={'alpha':0.2})
+
+def box(data, x, y, hue=None):
+    plt.figure(figsize=(10,7))
+    sns.boxplot(x=x, y=y, hue=hue, data=data, palette='husl')
+```
+
+<br>
+
+```python
+box(merged, 'dataset', 'Age')
+plt.savefig('graph/box_Age.png')
+plt.show()
+```
+
+![png](graph/box_Age.png)
+
+<br>
+
+```python
+box(merged, 'Sex', 'Age')
+plt.xticks((0,1),('male','female'))
+plt.savefig('graph/box_Age_Sex.png')
+plt.show()
+```
+
+![png](graph/box_Age_Sex.png)
+
+<br>
+
+```python
+box(merged, 'Sex', 'Age', 'Mr')
+plt.xticks((0,1),('male','female'))
+plt.savefig('graph/box_Age_Sex_Mr.png')
+plt.show()
+```
+
+![png](graph/box_Age_Sex_Mr.png)
+
+<br>
+
+```python
+box(merged, 'Sex', 'Age', 'Mrs')
+plt.xticks((0,1),('male','female'))
+plt.savefig('graph/box_Age_Sex_Mrs.png')
+plt.show()
+```
+
+![png](graph/box_Age_Sex_Mrs.png)
+
+<br>
+
+```python
+box(merged, 'Sex', 'Age', 'Miss')
+plt.xticks((0,1),('male','female'))
+plt.savefig('graph/box_Age_Sex_Miss.png')
+plt.show()
+```
+
+![png](graph/box_Age_Sex_Miss.png)
+
+<br>
+
+```python
+box(merged, 'Sex', 'Age', 'Master')
+plt.xticks((0,1),('male','female'))
+plt.savefig('graph/box_Age_Sex_Master.png')
+plt.show()
+```
+
+![png](graph/box_Age_Sex_Master.png)
+
+<br>
+---
+
+### Fill the missing value of Age
+
+```python
+temp = merged.groupby(['Sex', 'Mr', 'Mrs', 'Miss', 'Master'])['Age'].mean()
+print(temp)
+```
+| Sex | Mr | Mrs | Miss | Master | Age |
+|-----|-----|-----|-----|-----:|
+| 0 | 0 | 0 | 0 | 0 | 45.666667 |
+| 0 | 0 | 0 | 0 | 1 | 5.482642 |
+| 0 | 1 | 0 | 0 | 0 | 32.252151 |
+| 1 | 0 | 0 | 0 | 0 | 33.625000 |
+| 1 | 0 | 0 | 1 | 0 | 21.774238 |
+| 1 | 0 | 1 | 0 | 0 | 36.994118 |
+
+<br>
+
+```python
+temp = merged.groupby(['Sex', 'Mr', 'Mrs', 'Miss', 'Master'])['Age'].transform('mean')
+merged['Age_modify'] = merged['Age'].fillna(temp)
+```
+
+---
+
+### Draw histogram
+
+```python
+hist(merged, 'Age', 'dataset')
+plt.legend(['train','test']).set_title('dataset')
+plt.savefig('graph/hist_Age.png')
+plt.show()
+```
+
+![png](graph/hist_Age.png)
+
+<br>
+
+```python
+hist(merged, 'Age_modify', 'dataset')
+plt.legend(['train','test']).set_title('dataset')
+plt.savefig('graph/hist_Age_modify.png')
+plt.show()
+```
+
+![png](graph/hist_Age_modify.png)
+
+<br>
+
+```python
+hist(merged, 'Age', 'Sex', 'Survived')
+plt.legend(['male','female']).set_title('Sex')
+plt.savefig('graph/hist_Age_Sex.png')
+plt.show()
+```
+
+![png](graph/hist_Age_Sex.png)
+
+<br>
