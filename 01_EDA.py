@@ -64,10 +64,6 @@ print('merged data tail : \n', merged.tail())
 
 
 #
-del merged['Cabin']
-
-
-#
 def to_number(data):
     data.loc[data['Sex'] == 'male', 'Sex'] = 0
     data.loc[data['Sex'] == 'female', 'Sex'] = 1
@@ -122,68 +118,81 @@ merged['ticket_int'].value_counts()
 
 # -----------------------------------------------------------------------------
 #
-def Pclass_bar(data, hue):
+def count_bar(data, x, hue):
     plt.figure(figsize=(10,7))
-    ax = sns.countplot(x='Pclass', hue=hue, data=data, palette='husl')                          
-    plt.xlabel('')
-    plt.xticks([0,1,2], ('1st', '2nd', '3rd'))
-    plt.title('Pclass Frequency', fontsize=15)
+    ax = sns.countplot(x=x, hue=hue, data=data, palette='husl')
+    plt.title(x + ' Frequency', fontsize=15)
+    plt.legend(loc='upper right').set_title(hue)
     
     for p in ax.patches:
-        ax.text(p.get_x() + p.get_width()/2., 
-                p.get_height(), '%d' % int(p.get_height()), 
-                fontsize=12, ha='center', va='top', color='white')
+        a = p.get_height()
+        va = 'top'
+        color = 'white'
+        
+        if np.isnan(a):
+            a = 0
+            
+        if a < 30:
+            va = 'bottom'
+            color = '#C39BD3'
+            
+        ax.text(p.get_x() + p.get_width()/2., a, '%d' % int(a), 
+                fontsize=12, ha='center', va=va, color=color)
 
-Pclass_bar(merged, 'dataset')
+
+#     
+count_bar(merged, 'Pclass', 'dataset')
+plt.xticks([0,1,2], ('1st', '2nd', '3rd'))
 plt.savefig('graph/bar_Pclass.png')
 plt.show()
 
-Pclass_bar(merged, 'Survived')
+count_bar(merged, 'Pclass', 'Survived')
+plt.xticks([0,1,2], ('1st', '2nd', '3rd'))
 plt.savefig('graph/bar_Pclass_Survivd.png')
 plt.show()
 
 
 #
-def Sex_bar(data, hue):
-    plt.figure(figsize=(10,7))
-    ax = sns.countplot(x='Sex', hue=hue, data=data, palette='husl')
-    plt.xlabel('')
-    plt.xticks([0,1], ('male', 'female'))
-    plt.title('Sex frequency', fontsize=15)
-    
-    for p in ax.patches:
-        ax.text(p.get_x() + p.get_width()/2., 
-                p.get_height(), '%d' % int(p.get_height()), 
-                fontsize=12, ha='center', va='top', color='white')
-
-Sex_bar(merged, 'dataset')
+count_bar(merged, 'Sex', 'dataset')
+plt.xticks([0,1], ('male', 'female'))
 plt.savefig('graph/bar_Sex.png')
 plt.show()
 
-Sex_bar(merged, 'Survived')
+count_bar(merged, 'Sex', 'Survived')
+plt.xticks([0,1], ('male', 'female'))
 plt.savefig('graph/bar_Sex_Survived.png')
 plt.show()
 
 
 #
-def Embarked_bar(data, hue):
-    plt.figure(figsize=(10,7))
-    ax = sns.countplot(x='Embarked', hue=hue, data=data, palette='husl')                            
-    plt.xlabel('')
-    plt.xticks([0,1,2], ('Cherbourg', 'Queenstown', 'Southampton'))
-    plt.title('Embarked frequency', fontsize=15)
-    
-    for p in ax.patches:
-        ax.text(p.get_x() + p.get_width()/2., 
-                p.get_height(), '%d' % int(p.get_height()), 
-                fontsize=12, ha='center', va='top', color='white')
-    
-Embarked_bar(merged, 'dataset')
+count_bar(merged, 'Embarked', 'dataset')
+plt.xticks([0,1,2], ('Cherbourg', 'Queenstown', 'Southampton'))
 plt.savefig('graph/bar_Embarked.png')
 plt.show()
 
-Embarked_bar(merged, 'Survived')
+count_bar(merged, 'Embarked', 'Survived')
+plt.xticks([0,1,2], ('Cherbourg', 'Queenstown', 'Southampton'))
 plt.savefig('graph/bar_Embarked_Survived.png')
+plt.show()
+
+
+#
+count_bar(merged, 'SibSp', 'dataset')
+plt.savefig('graph/bar_SibSp.png')
+plt.show()
+
+count_bar(merged, 'SibSp', 'Survived')
+plt.savefig('graph/bar_SibSp_Survived.png')
+plt.show()
+
+
+#
+count_bar(merged, 'Parch', 'dataset')
+plt.savefig('graph/bar_Parch.png')
+plt.show()
+
+count_bar(merged, 'Parch', 'Survived')
+plt.savefig('graph/bar_Parch_Survived.png')
 plt.show()
 
 
@@ -207,58 +216,10 @@ plt.legend(('male','female')).set_title('Sex')
 plt.savefig('graph/bar_Embarked_Sex_Survived.png')
 plt.show()
 
-
-#
-def SibSp_bar(data, hue):
-    plt.figure(figsize=(10,7))
-    ax = sns.countplot(x='SibSp', hue=hue, data=data, palette='husl')                            
-    plt.xlabel('')
-    plt.title('SibSp frequency', fontsize=15)
-    plt.legend(loc='upper right').set_title(hue)
-    
-    for p in ax.patches:
-        a = p.get_height()
-        
-        if np.isnan(a):
-            a = 0
-
-        ax.text(p.get_x() + p.get_width()/2., 
-                a, '%d' % int(a), 
-                fontsize=12, ha='center', va='bottom', color='#C39BD3')
-
-SibSp_bar(merged, 'dataset')
-plt.savefig('graph/bar_SibSp.png')
-plt.show()
-
-SibSp_bar(merged, 'Survived')
-plt.savefig('graph/bar_SibSp_Survived.png')
-plt.show()
-
-
-#
-def Parch_bar(data, hue):
-    plt.figure(figsize=(10,7))
-    ax = sns.countplot(x='Parch', hue=hue, data=data, palette='husl')                            
-    plt.xlabel('')
-    plt.title('Parch frequency', fontsize=15)
-    plt.legend(loc='upper right').set_title(hue)
-    
-    for p in ax.patches:
-        a = p.get_height()
-        
-        if np.isnan(a):
-            a = 0
-
-        ax.text(p.get_x() + p.get_width()/2., 
-                a, '%d' % int(a), 
-                fontsize=12, ha='center', va='bottom', color='#C39BD3')
-
-Parch_bar(merged, 'dataset')
-plt.savefig('graph/bar_Parch.png')
-plt.show()
-
-Parch_bar(merged, 'Survived')
-plt.savefig('graph/bar_Parch_Survived.png')
+bar(merged, 'Embarked', 'Pclass', 'Survived')
+plt.xticks([0,1,2], ('Cherbourg', 'Queenstown', 'Southampton'))
+plt.legend(('1st', '2nd', '3rd')).set_title('Pclass')
+plt.savefig('graph/bar_Embarked_Pclass_Survived.png')
 plt.show()
 
 
@@ -312,22 +273,101 @@ merged = Name_to_number(merged)
 
 
 #
+merged.loc[merged['Embarked'].isnull()]
+merged.loc[merged['ticket_int'] == '113572', 'Embarked']
+merged.loc[merged['Cabin'] == 'B28', 'Embarked']
+merged.loc[merged['Fare'] == 80, 'Embarked']
+merged.loc[merged['Pclass'] == 1, 'Embarked']
+
+merged.loc[merged['Embarked'].isnull(), 'Embarked'] = 2
+
+
+#
 temp = pd.get_dummies(merged.Embarked)
 temp.columns = ['E_Cherbourg', 'E_Queenstown', 'E_Southampton']
 merged = pd.concat([merged, temp], axis=1)
 
+merged.head()
+merged.columns
+
 
 # -----------------------------------------------------------------------------
+def hist(data, a, hue, col=None):
+    g =  sns.FacetGrid(data, hue=hue, col=col, size=7, palette='husl')
+    g = g.map(sns.distplot, a, hist_kws={'alpha':0.2})
+    
+def box(data, x, y, hue=None):
+    plt.figure(figsize=(10,7))
+    sns.boxplot(x=x, y=y, hue=hue, data=data, palette='husl')
+
+box(merged, 'dataset', 'Age')
+plt.savefig('graph/box_Age.png')
+plt.show()
+    
+box(merged, 'Sex', 'Age')
+plt.xticks((0,1),('male','female'))
+plt.savefig('graph/box_Age_Sex.png')
+plt.show()
+
+box(merged, 'Sex', 'Age', 'Mr')
+plt.xticks((0,1),('male','female'))
+plt.savefig('graph/box_Age_Sex_Mr.png')
+plt.show()
+
+box(merged, 'Sex', 'Age', 'Mrs')
+plt.xticks((0,1),('male','female'))
+plt.savefig('graph/box_Age_Sex_Mrs.png')
+plt.show()
+
+box(merged, 'Sex', 'Age', 'Miss')
+plt.xticks((0,1),('male','female'))
+plt.savefig('graph/box_Age_Sex_Miss.png')
+plt.show()
+
+box(merged, 'Sex', 'Age', 'Master')
+plt.xticks((0,1),('male','female'))
+plt.savefig('graph/box_Age_Sex_Master.png')
+plt.show()
+
+
 #
-def Age_hist(**kwargs):
-    sns.distplot(a='Age', hist=True, palette='husl')
-    
-def hist(data, hue, col):
-    g =  sns.FacetGrid(data, hue=hue, col=col, size=7)
-    g = g.map(Age_hist)
-    
-hist(merged, 'dataset', 'Survived')
+merged.loc[merged['Age'].isnull()]
+temp = merged.groupby(['Sex', 'Mr', 'Mrs', 'Miss', 'Master'])['Age'].mean().reset_index()
+temp = merged.groupby(['Sex', 'Mr', 'Mrs', 'Miss', 'Master'])['Age'].transform('mean')
+
+loss = merged['Age'] - temp
+loss = np.power(loss, 2)
+loss = np.sum(loss) / len(merged.loc[merged['Age'].notnull()])
+loss = np.sqrt(loss)
+
+merged['Age_modify'] = merged['Age'].fillna(temp)
+merged.loc[merged['Age'].isnull()]
+
+
+#
+hist(merged, 'Age', 'dataset')
+plt.legend(['train','test']).set_title('dataset')
 plt.savefig('graph/hist_Age.png')
+plt.show()
+
+hist(merged, 'Age_modify', 'dataset')
+plt.legend(['train','test']).set_title('dataset')
+plt.savefig('graph/hist_Age_modify.png')
+plt.show()
+
+hist(merged, 'Age', 'Sex', 'Survived')
+plt.legend(['male','female']).set_title('Sex')
+plt.savefig('graph/hist_Age_Sex.png')
+plt.show()
+
+hist(merged, 'Age_modify', 'Sex', 'Survived')
+plt.legend(['male','female']).set_title('Sex')
+plt.savefig('graph/hist_Age_modify_Sex.png')
+plt.show()
+
+hist(merged, 'Embarked', 'Survived')
+plt.legend(['Cherbourg', 'Queenstown', 'Southampton']).set_title('Embarked')
+plt.savefig('graph/hist_Age_Embarked.png')
 plt.show()
 
 
