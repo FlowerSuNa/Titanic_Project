@@ -51,6 +51,7 @@ test = pd.read_csv('test.csv', index_col=['PassengerId'])
 | Embarked |  object |
 
 * test data type :
+
 | Feature | Type |
 |---------|------|
 | Pclass | int64|
