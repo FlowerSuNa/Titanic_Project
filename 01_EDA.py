@@ -1,5 +1,5 @@
 
-#
+# Import ibrary and load data
 import pandas as pd
 import numpy as np
 import re
@@ -8,12 +8,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-#
 train = pd.read_csv('train.csv', index_col=['PassengerId'])
 test = pd.read_csv('test.csv', index_col=['PassengerId'])
 
 
-#
+# Explor the data
 print('train shape : ', train.shape)    # (891, 12)
 print('test shape : ', test.shape)      # (418, 11)
 
@@ -26,10 +25,9 @@ print('test head : \n', test.head(10))
 print('train info : \n', train.info())
 print('test info: \n', test.info())
 
-print('train missing value : \n', train.isnull().sum())
+print('train missing values : \n', train.isnull().sum())
 # Age : 177, Cabin : 687, Embarked : 2
-
-print('test missing value : \n', test.isnull().sum())
+print('test missing values : \n', test.isnull().sum())
 # Age : 86, Fare : 1, Cabin : 327
 
 print('train describe : \n', train.describe())
@@ -51,7 +49,7 @@ print('train data Survived : \n', train['Survived'].value_counts(sort=False))
 
 
 # -----------------------------------------------------------------------------
-#
+# Merge train data and test data
 train['dataset'] = 'train set'
 test['dataset'] = 'test set'
 
@@ -63,7 +61,7 @@ print('merged data head : \n', merged.head())
 print('merged data tail : \n', merged.tail())
 
 
-#
+# Change feature to integer
 def to_number(data):
     data.loc[data['Sex'] == 'male', 'Sex'] = 0
     data.loc[data['Sex'] == 'female', 'Sex'] = 1
@@ -83,7 +81,7 @@ print(merged[['Sex','Embarked']].head())
 print(merged[['Sex','Embarked']].tail())
     
 
-#
+# Extract the title name
 def title_name(name):
     n = re.findall(', .{1,15}\.', name)
     return ' '.join(n)[2:]
@@ -229,7 +227,7 @@ def Name_bar(data, hue):
     ax = sns.countplot(x='title_name', hue=hue, data=data, palette='husl')                            
     plt.xlabel('')
     plt.xticks(rotation=30)
-    plt.legend(loc='upper right')
+    plt.legend(loc='upper right').set_title(hue)
     plt.title('Title Name frequency', fontsize=15)
     
     for p in ax.patches:
@@ -272,7 +270,7 @@ def Name_to_number(data):
 merged = Name_to_number(merged)
 
 
-#
+# Fill the missing value of Embarked
 merged.loc[merged['Embarked'].isnull()]
 merged.loc[merged['ticket_int'] == '113572', 'Embarked']
 merged.loc[merged['Cabin'] == 'B28', 'Embarked']
@@ -282,7 +280,7 @@ merged.loc[merged['Pclass'] == 1, 'Embarked']
 merged.loc[merged['Embarked'].isnull(), 'Embarked'] = 2
 
 
-#
+# Do one-hot encoding
 temp = pd.get_dummies(merged.Embarked)
 temp.columns = ['E_Cherbourg', 'E_Queenstown', 'E_Southampton']
 merged = pd.concat([merged, temp], axis=1)
@@ -292,10 +290,7 @@ merged.columns
 
 
 # -----------------------------------------------------------------------------
-def hist(data, a, hue, col=None):
-    g =  sns.FacetGrid(data, hue=hue, col=col, size=7, palette='husl')
-    g = g.map(sns.distplot, a, hist_kws={'alpha':0.2})
-    
+#   
 def box(data, x, y, hue=None):
     plt.figure(figsize=(10,7))
     sns.boxplot(x=x, y=y, hue=hue, data=data, palette='husl')
@@ -331,8 +326,8 @@ plt.show()
 
 
 #
-merged.loc[merged['Age'].isnull()]
-temp = merged.groupby(['Sex', 'Mr', 'Mrs', 'Miss', 'Master'])['Age'].mean().reset_index()
+merged.loc[merged['Age'].isnull()]  #263
+temp = merged.groupby(['Sex', 'Mr', 'Mrs', 'Miss', 'Master'])['Age'].mean()
 temp = merged.groupby(['Sex', 'Mr', 'Mrs', 'Miss', 'Master'])['Age'].transform('mean')
 
 loss = merged['Age'] - temp
@@ -341,12 +336,20 @@ loss = np.sum(loss) / len(merged.loc[merged['Age'].notnull()])
 loss = np.sqrt(loss)
 
 merged['Age_modify'] = merged['Age'].fillna(temp)
-merged.loc[merged['Age'].isnull()]
+merged.loc[merged['Age'].isnull(), 'Mrs'].sum()     # 27
+merged.loc[merged['Age'].isnull(), 'Miss'].sum()    # 50
+merged.loc[merged['Age'].isnull(), 'Mr'].sum()      # 176
+merged.loc[merged['Age'].isnull(), 'Master'].sum()  # 8
 
 
 #
+def hist(data, a, hue, col=None):
+    g =  sns.FacetGrid(data, hue=hue, col=col, size=7, palette='husl')
+    g = g.map(sns.distplot, a, bins=10, hist_kws={'alpha':0.2})
+    
 hist(merged, 'Age', 'dataset')
 plt.legend(['train','test']).set_title('dataset')
+plt.ylim((0, 0.05))
 plt.savefig('graph/hist_Age.png')
 plt.show()
 
@@ -355,9 +358,9 @@ plt.legend(['train','test']).set_title('dataset')
 plt.savefig('graph/hist_Age_modify.png')
 plt.show()
 
-hist(merged, 'Age', 'Sex', 'Survived')
-plt.legend(['male','female']).set_title('Sex')
-plt.savefig('graph/hist_Age_Sex.png')
+hist(merged, 'Age_modify', 'Survived')
+plt.legend().set_title('Survived')
+plt.savefig('graph/hist_Age_modify_Survived.png')
 plt.show()
 
 hist(merged, 'Age_modify', 'Sex', 'Survived')
@@ -365,18 +368,38 @@ plt.legend(['male','female']).set_title('Sex')
 plt.savefig('graph/hist_Age_modify_Sex.png')
 plt.show()
 
-hist(merged, 'Embarked', 'Survived')
-plt.legend(['Cherbourg', 'Queenstown', 'Southampton']).set_title('Embarked')
-plt.savefig('graph/hist_Age_Embarked.png')
+
+#
+box(merged, 'Survived', 'Age_modify')
+plt.savefig('graph/box_Age_Survived.png')
 plt.show()
 
 
+#
+box(merged, 'dataset', 'Fare')
+plt.savefig('graph/box_Fare.png')
+plt.show()
 
-merged['Ticket'].value_counts()
-merged['SibSp'].value_counts()
-merged['Parch'].value_counts()
+box(merged, 'Survived', 'Fare')
+plt.savefig('graph/box_Fare_Survived.png')
+plt.show()
 
-merged.loc[merged['Age'].isnull()]
+box(merged, 'Pclass', 'Fare')
+plt.xticks((0,1,2), ('1st', '2nd', '3rd'))
+plt.savefig('graph/box_Fare_Pclass.png')
+plt.show()
 
-train.to_csv('train_modify.csv', index=False)
+hist(merged, 'Fare', 'dataset')
+plt.legend(['train','test']).set_title('dataset')
+plt.savefig('graph/hist_Fare.png')
+plt.show()
 
+
+#
+merged.columns
+
+train = merged.iloc[:891]
+train.to_csv('train_modify.csv')
+
+test = merged.iloc[891:]
+test.to_csv('test_modify.csv')

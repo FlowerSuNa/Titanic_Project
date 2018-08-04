@@ -454,15 +454,12 @@ merged = pd.concat([merged, temp], axis=1)
 ```
 
 <br>
+
 ---
 
 ### Draw boxplots about Age
 
 ```python
-def hist(data, a, hue, col=None):
-    g =  sns.FacetGrid(data, hue=hue, col=col, size=7, palette='husl')
-    g = g.map(sns.distplot, a, hist_kws={'alpha':0.2})
-
 def box(data, x, y, hue=None):
     plt.figure(figsize=(10,7))
     sns.boxplot(x=x, y=y, hue=hue, data=data, palette='husl')
@@ -534,6 +531,7 @@ plt.show()
 ![png](graph/box_Age_Sex_Master.png)
 
 <br>
+
 ---
 
 ### Fill the missing value of Age
@@ -543,7 +541,7 @@ temp = merged.groupby(['Sex', 'Mr', 'Mrs', 'Miss', 'Master'])['Age'].mean()
 print(temp)
 ```
 | Sex | Mr | Mrs | Miss | Master | Age |
-|-----|-----|-----|-----|-----:|
+|-----|-----|-----|-----|-----|-------:|
 | 0 | 0 | 0 | 0 | 0 | 45.666667 |
 | 0 | 0 | 0 | 0 | 1 | 5.482642 |
 | 0 | 1 | 0 | 0 | 0 | 32.252151 |
@@ -558,9 +556,19 @@ temp = merged.groupby(['Sex', 'Mr', 'Mrs', 'Miss', 'Master'])['Age'].transform('
 merged['Age_modify'] = merged['Age'].fillna(temp)
 ```
 
+<br>
+
 ---
 
-### Draw histogram
+### Draw histograms and boxplot about Age
+
+```python
+def hist(data, a, hue, col=None):
+    g =  sns.FacetGrid(data, hue=hue, col=col, size=7, palette='husl')
+    g = g.map(sns.distplot, a, hist_kws={'alpha':0.2})
+```
+
+<br>
 
 ```python
 hist(merged, 'Age', 'dataset')
@@ -585,12 +593,76 @@ plt.show()
 <br>
 
 ```python
-hist(merged, 'Age', 'Sex', 'Survived')
-plt.legend(['male','female']).set_title('Sex')
-plt.savefig('graph/hist_Age_Sex.png')
+hist(merged, 'Age_modify', 'Survived')
+plt.legend().set_title('Survived')
+plt.savefig('graph/hist_Age_modify_Survived.png')
 plt.show()
 ```
 
-![png](graph/hist_Age_Sex.png)
+![png](graph/hist_Age_modify_Survived.png)
 
 <br>
+
+```python
+hist(merged, 'Age_modify', 'Sex', 'Survived')
+plt.legend(['male','female']).set_title('Sex')
+plt.savefig('graph/hist_Age_modify_Sex.png')
+plt.show()
+```
+
+![png](graph/hist_Age_modify_Sex.png)
+
+<br>
+
+```python
+box(merged, 'Survived', 'Age_modify')
+plt.savefig('graph/box_Age_Survived.png')
+plt.show()
+```
+
+![png](graph/box_Age_Survived.png)
+
+<br>
+
+### Draw boxplots and histograms about Fare
+
+```python
+box(merged, 'dataset', 'Fare')
+plt.savefig('graph/box_Fare.png')
+plt.show()
+```
+
+![png](graph/box_Fare.png)
+
+<br>
+
+```python
+box(merged, 'Survived', 'Fare')
+plt.savefig('graph/box_Fare_Survived.png')
+plt.show()
+
+```
+
+![png](graph/box_Fare_Survived.png)
+
+<br>
+
+```python
+box(merged, 'Pclass', 'Fare')
+plt.xticks((0,1,2), ('1st', '2nd', '3rd'))
+plt.savefig('graph/box_Fare_Pclass.png')
+plt.show()
+```
+
+![png](graph/box_Fare_Pclass.png)
+
+<br>
+
+```python
+hist(merged, 'Fare', 'dataset')
+plt.legend(['train','test']).set_title('dataset')
+plt.savefig('graph/hist_Fare.png')
+plt.show()
+```
+
+![png](graph/hist_Fare.png)
