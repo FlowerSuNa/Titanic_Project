@@ -374,6 +374,11 @@ box(merged, 'Survived', 'Age_modify')
 plt.savefig('graph/box_Age_Survived.png')
 plt.show()
 
+box(merged, 'Sex', 'Age_modify', 'Survived')
+plt.legend(['male','female']).set_title('Sex')
+plt.savefig('graph/box_Age__modify_Sex_Survived.png')
+plt.show()
+
 
 #
 box(merged, 'dataset', 'Fare')
@@ -403,3 +408,32 @@ train.to_csv('train_modify.csv')
 
 test = merged.iloc[891:]
 test.to_csv('test_modify.csv')
+
+merged.to_csv('merged_modify.csv')
+
+
+#
+#
+corr = train.corr(method='pearson')
+corr = corr.round(2)
+mask = np.zeros_like(corr, dtype=np.bool)
+mask[np.triu_indices_from(mask)] = True
+cmap = sns.diverging_palette(220, 10, as_cmap=True)
+
+plt.figure(figsize=(15,15))
+sns.heatmap(corr, vmin=-1, vmax=1,
+            mask=mask, cmap=cmap, annot=True, linewidth=.5, cbar_kws={'shrink':.6})
+plt.savefig('graph/heatmap.png')
+plt.show()
+
+corr = train.corr(method='spearman')
+corr = corr.round(2)
+mask = np.zeros_like(corr, dtype=np.bool)
+mask[np.triu_indices_from(mask)] = True
+cmap = sns.diverging_palette(220, 10, as_cmap=True)
+
+plt.figure(figsize=(15,15))
+sns.heatmap(corr, vmin=-1, vmax=1,
+            mask=mask, cmap=cmap, annot=True, linewidth=.5, cbar_kws={'shrink':.6})
+plt.savefig('graph/heatmap_spear.png')
+plt.show()

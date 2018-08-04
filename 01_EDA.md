@@ -2,7 +2,7 @@
 
 # 1. EDA and Preprocessing
 
-### Import ibrary and load data
+### Import library and load data
 
 
 ```python
@@ -23,11 +23,13 @@ test = pd.read_csv('test.csv', index_col=['PassengerId'])
 ### Explor the data
 
 * train shape : (891, 12)
+
 * test shape : (418, 11)
 
 <br>
 
 * train columns : Survived, Pclass, Name, Sex, Age, SibSp, Parch, Ticket, Fare, Cabin, Embarked
+
 * test columns : Pclass, Name, Sex, Age, SibSp, Parch, Ticket, Fare, Cabin, Embarked
 
 <br>
@@ -58,14 +60,22 @@ Embarked    418 non-null object
 
 <br>
 
-* train missing values : <br>
-Age : 177
-Cabin : 687
-Embarked : 2
+* train missing values :
+
+| Feature | Count |
+|---------|--------|
+| Age | 177 |
+| Cabin | 687 |
+| Embarked | 2 |
+
+
 * test missing values : <br>
-Age : 86
-Fare : 1
-Cabin : 327
+
+| Feature | Count |
+|---------|--------|
+| Age | 86 |
+| Fare | 1 |
+| Cabin | 327 |
 
 <br>
 
@@ -622,6 +632,15 @@ plt.show()
 
 ![png](graph/box_Age_Survived.png)
 
+```python
+box(merged, 'Sex', 'Age_modify', 'Survived')
+plt.legend(['male','female']).set_title('Sex')
+plt.savefig('graph/box_Age__modify_Sex_Survived.png')
+plt.show()
+```
+
+![png](graph/box_Age__modify_Sex_Survived.png)
+
 <br>
 
 ### Draw boxplots and histograms about Fare
@@ -666,3 +685,39 @@ plt.show()
 ```
 
 ![png](graph/hist_Fare.png)
+
+<br>
+
+---
+
+### Save datasets
+
+```python
+train = merged.iloc[:891]
+train.to_csv('train_modify.csv')
+
+test = merged.iloc[891:]
+test.to_csv('test_modify.csv')
+
+merged.to_csv('merged_modify.csv')
+```
+
+<br>
+
+### Check the correlation
+
+```python
+corr = train.corr(method='pearson')
+corr = corr.round(2)
+mask = np.zeros_like(corr, dtype=np.bool)
+mask[np.triu_indices_from(mask)] = True
+cmap = sns.diverging_palette(220, 10, as_cmap=True)
+
+plt.figure(figsize=(15,15))
+sns.heatmap(corr, vmin=-1, vmax=1,
+            mask=mask, cmap=cmap, annot=True, linewidth=.5, cbar_kws={'shrink':.6})
+plt.savefig('graph/heatmap.png')
+plt.show()
+```
+
+![png](graph/heatmap.png)
