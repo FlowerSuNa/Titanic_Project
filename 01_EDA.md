@@ -34,29 +34,35 @@ test = pd.read_csv('test.csv', index_col=['PassengerId'])
 
 <br>
 
-* train info : <br>
-Survived    891 non-null int64
-Pclass      891 non-null int64
-Name        891 non-null object
-Sex         891 non-null object
-Age         714 non-null float64
-SibSp       891 non-null int64
-Parch       891 non-null int64
-Ticket      891 non-null object
-Fare        891 non-null float64
-Cabin       204 non-null object
-Embarked    889 non-null object
-* test info : <br>
-Pclass      418 non-null int64
-Name        418 non-null object
-Sex         418 non-null object
-Age         332 non-null float64
-SibSp       418 non-null int64
-Parch       418 non-null int64
-Ticket      418 non-null object
-Fare        417 non-null float64
-Cabin       91 non-null object
-Embarked    418 non-null object
+* train data type :
+
+| Feature | Type |
+|---------|------|
+| Survived | int64 |
+| Pclass | int64|
+| Name |  object |
+| Sex | object |
+| Age | float64 |
+| SibSp | int64 |
+| Parch | int64 |
+| Ticket | object |
+| Fare | float64 |
+| Cabin | object |
+| Embarked |  object |
+
+* test data type :
+| Feature | Type |
+|---------|------|
+| Pclass | int64|
+| Name |  object |
+| Sex | object |
+| Age | float64 |
+| SibSp | int64 |
+| Parch | int64 |
+| Ticket | object |
+| Fare | float64 |
+| Cabin | object |
+| Embarked |  object |
 
 <br>
 
@@ -80,69 +86,102 @@ Embarked    418 non-null object
 <br>
 
 * train data Pclass :
-1 : 216
-2: 184
-3 : 491
+
+| Level | Count |
+|-------|-------|
+| 1st | 216 |
+| 2nd | 184 |
+| 3rd | 491 |
+
 * test data Pclass :
-1 : 107
-2 : 93
-3 : 218
+
+| Level | Count |
+|-------|-------|
+| 1st | 107 |
+| 2nd | 93 |
+| 3rd | 218 |
 
 <br>
 
 * train data Embarked :
-S : 644
-C : 168
-Q : 77
+
+| Level | Count |
+|-------|-------|
+| S | 644 |
+| C | 168 |
+| Q | 77 |
+
 * test data Embarked :
-S : 270
-Q : 46
-X : 102
+
+| Level | Count |
+|-------|-------|
+| S | 270 |
+| C | 46 |
+| Q | 102 |
 
 <br>
 
 * train data SibSp :
-0 : 608
-1 : 209
-2 : 28
-3 : 16
-4 : 18
-5 : 5
-8 : 7
+
+| Level | Count |
+|-------|-------|
+| 0 | 608 |
+| 1 | 209 |
+| 2 | 28 |
+| 3 | 16 |
+| 4 | 18 |
+| 5 | 5 |
+| 8 | 7 |
+
 * test data SibSp :
-0 : 283
-1 : 110
-2 : 14
-3 : 4
-4 : 4
-5 : 1
-8 : 2
+
+| Level | Count |
+|-------|-------|
+| 0 | 283 |
+| 1 | 110 |
+| 2 | 14 |
+| 3 | 4 |
+| 4 | 4 |
+| 5 | 1 |
+| 8 | 2 |
 
 <br>
 
 * train data Parch :
-0 : 678
-1 : 118
-2 : 80
-3 : 5
-4 : 4
-5 : 5
-6 : 1
+
+| Level | Count |
+|-------|-------|
+| 0 | 678 |
+| 1 | 118 |
+| 2 | 80 |
+| 3 | 5 |
+| 4 | 4 |
+| 5 | 5 |
+| 6 | 1 |
+
 * test data Parch :
-0 : 324
-1 : 52
-2 : 33
-3 : 3
-4 : 2
-5 : 1
-6 : 1
-9 : 2
+
+| Level | Count |
+|-------|-------|
+| 0 | 324 |
+| 1 | 52 |
+| 2 | 33 |
+| 3 | 3 |
+| 4 | 2 |
+| 5 | 1 |
+| 6 | 1 |
+| 9 | 2 |
 
 <br>
 
 * train data Survived :
-0 : 549
-1 : 342
+
+| Level | Count |
+|-------|-------|
+| Deceased | 549 |
+| Survived | 342 |
+
+<br>
 
 ---
 
@@ -156,6 +195,7 @@ merged = pd.concat([train, test])
 ```
 
 * merged data shape : (1309, 12)
+
 * merged data columns : Age, Cabin, Embarked, Fare, Name, Ticket, Parch, Pclass, Sex, SibSp, Survived, dataset
 
 <br>

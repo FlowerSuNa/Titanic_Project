@@ -57,9 +57,15 @@ def logistic(train_df, test_df, feat, c=1):
     return pred
 
 feat = ['Sex', 'Mr', 'Mrs', 'Miss', 'Master', 
-        'E_Cherbourg', 'E_Queenstown', 'E_Southampton']
+        'E_Cherbourg', 'E_Queenstown', 'E_Southampton',
+        'P_1st', 'P_2rd', 'P_3rd']
+
+feat = ['Sex',
+        'E_Cherbourg', 'E_Queenstown', 'E_Southampton',
+        'P_1st', 'P_2rd', 'P_3rd']
 pred = logistic(train, test, feat)
 submission['Survived'] = pred
+submission['Survived'] = np.abs(submission['Survived'] - 1)
 submission.to_csv('submission/logistic_1.csv', index=False)
 
-del submission['is_attributed']
+train.columns
