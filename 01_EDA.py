@@ -281,6 +281,10 @@ merged.loc[merged['Embarked'].isnull(), 'Embarked'] = 2
 
 
 # Do one-hot encoding
+temp = pd.get_dummies(merged.Pclass)
+temp.columns = ['P_1st', 'P_2rd', 'P_3rd']
+merged = pd.concat([merged, temp], axis=1)
+
 temp = pd.get_dummies(merged.Embarked)
 temp.columns = ['E_Cherbourg', 'E_Queenstown', 'E_Southampton']
 merged = pd.concat([merged, temp], axis=1)
