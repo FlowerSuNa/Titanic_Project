@@ -1,9 +1,13 @@
 ##### kaggle 'Titanic : Machine Learning from Disaster'
 
 # 1. EDA and Preprocessing
+[source code](01_EDA.py)
 
-### Import library and load data
+<br>
 
+---
+
+## Import library and load data
 
 ```python
 import pandas as pd
@@ -20,21 +24,29 @@ test = pd.read_csv('test.csv', index_col=['PassengerId'])
 
 <br>
 
-### Explor the data
+## Explor the data
 
-* train shape : (891, 12)
+#### Data shape
 
-* test shape : (418, 11)
-
-<br>
-
-* train columns : Survived, Pclass, Name, Sex, Age, SibSp, Parch, Ticket, Fare, Cabin, Embarked
-
-* test columns : Pclass, Name, Sex, Age, SibSp, Parch, Ticket, Fare, Cabin, Embarked
+| Data | Col | Row |
+|:----:|:---:|:---:|
+| Train | 12 | 891 |
+| Test | 11 | 418 |
 
 <br>
 
-* train data type :
+#### Data columns
+
+| Data | Columns |
+|:----:|---------|
+| Train | Survived, Pclass, Name, Sex, Age, SibSp, Parch, Ticket, Fare, Cabin, Embarked |
+| Test | Pclass, Name, Sex, Age, SibSp, Parch, Ticket, Fare, Cabin, Embarked |
+
+<br>
+
+#### Data Type
+
+Train
 
 | Feature | Type |
 |---------|------|
@@ -50,7 +62,9 @@ test = pd.read_csv('test.csv', index_col=['PassengerId'])
 | Cabin | object |
 | Embarked |  object |
 
-* test data type :
+<br>
+
+Test
 
 | Feature | Type |
 |---------|------|
@@ -67,62 +81,77 @@ test = pd.read_csv('test.csv', index_col=['PassengerId'])
 
 <br>
 
-* train missing values :
+## Check missing values
+
+Train
 
 | Feature | Count |
-|---------|--------|
+|---------|------:|
 | Age | 177 |
 | Cabin | 687 |
 | Embarked | 2 |
 
+<br>
 
-* test missing values : <br>
+Test
 
 | Feature | Count |
-|---------|--------|
+|---------|------:|
 | Age | 86 |
 | Fare | 1 |
 | Cabin | 327 |
 
 <br>
 
-* train data Pclass :
+## Check level counts
+
+#### Pclass
+
+Train
 
 | Level | Count |
-|-------|-------|
+|-------|------:|
 | 1st | 216 |
 | 2nd | 184 |
 | 3rd | 491 |
 
-* test data Pclass :
+<br>
+
+Test
 
 | Level | Count |
-|-------|-------|
+|-------|------:|
 | 1st | 107 |
 | 2nd | 93 |
 | 3rd | 218 |
 
 <br>
 
-* train data Embarked :
+#### Embarked
+
+Train
 
 | Level | Count |
-|-------|-------|
+|-------|------:|
 | S | 644 |
 | C | 168 |
 | Q | 77 |
 
-* test data Embarked :
+<br>
+
+Test
 
 | Level | Count |
-|-------|-------|
-| S | 270 |
+|-------|------:|
+| S |  270 |
 | C | 46 |
 | Q | 102 |
 
 <br>
 
-* train data SibSp :
+#### SibSp
+
+Train
 
 | Level | Count |
 |-------|-------|
@@ -134,7 +163,9 @@ test = pd.read_csv('test.csv', index_col=['PassengerId'])
 | 5 | 5 |
 | 8 | 7 |
 
-* test data SibSp :
+<br>
+
+Test
 
 | Level | Count |
 |-------|-------|
@@ -148,7 +179,9 @@ test = pd.read_csv('test.csv', index_col=['PassengerId'])
 
 <br>
 
-* train data Parch :
+#### Parch
+
+Train
 
 | Level | Count |
 |-------|-------|
@@ -160,7 +193,9 @@ test = pd.read_csv('test.csv', index_col=['PassengerId'])
 | 5 | 5 |
 | 6 | 1 |
 
-* test data Parch :
+<br>
+
+Test
 
 | Level | Count |
 |-------|-------|
@@ -175,7 +210,7 @@ test = pd.read_csv('test.csv', index_col=['PassengerId'])
 
 <br>
 
-* train data Survived :
+#### Survived
 
 | Level | Count |
 |-------|-------|
