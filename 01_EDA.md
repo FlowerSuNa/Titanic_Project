@@ -221,7 +221,7 @@ Test
 
 ---
 
-### Merge train data and test data
+## Merge train data and test data
 
 ```python
 train['dataset'] = 'train set'
@@ -236,46 +236,38 @@ merged = pd.concat([train, test])
 
 <br>
 
-### Change feature to integer
+## Change feature to integer
+
+#### Sex
 
 ```python
-def to_number(data):
-    data.loc[data['Sex'] == 'male', 'Sex'] = 0
-    data.loc[data['Sex'] == 'female', 'Sex'] = 1
-
-    print(data['Sex'].head())
-
-    data.loc[data['Embarked'] == 'C', 'Embarked'] = 0
-    data.loc[data['Embarked'] == 'Q', 'Embarked'] = 1
-    data.loc[data['Embarked'] == 'S', 'Embarked'] = 2
-
-    print(data['Embarked'].head())
-
-    return data
-
-merged = to_number(merged)
+merged.loc[merged['Sex'] == 'male', 'Sex'] = 0
+merged.loc[merged['Sex'] == 'female', 'Sex'] = 1
 ```
 
 <br>
 
-### Extract the title Name
+#### Embarked
 
 ```python
-def title_name(name):
-    n = re.findall(', .{1,15}\.', name)
-    return ' '.join(n)[2:]
+merged.loc[merged['Embarked'] == 'C', 'Embarked'] = 0
+merged.loc[merged['Embarked'] == 'Q', 'Embarked'] = 1
+merged.loc[merged['Embarked'] == 'S', 'Embarked'] = 2
+```
 
-merged['title_name'] = np.nan
-merged['title_name'] = merged['Name'].apply(lambda x: title_name(x))
+<br>
 
-del merged['Name']
+## Makes a feature : family
+
+```python
+merged['family'] = merged['SibSp'] + merged['Parch'] + 1
 ```
 
 <br>
 
 ---
 
-### Draw bar graphs
+## Draw bar graphs
 
 ```python
 def count_bar(data, x, hue):
@@ -302,6 +294,8 @@ def count_bar(data, x, hue):
 
 <br>
 
+#### Pclass
+
 ```python
 count_bar(merged, 'Pclass', 'dataset')
 plt.xticks([0,1,2], ('1st', '2nd', '3rd'))
@@ -323,6 +317,8 @@ plt.show()
 ![png](graph/bar_Pclass_Survivd.png)
 
 <br>
+
+#### Sex
 
 ```python
 count_bar(merged, 'Sex', 'dataset')
@@ -347,6 +343,8 @@ plt.show()
 
 <br>
 
+#### Embarked
+
 ```python
 count_bar(merged, 'Embarked', 'dataset')
 plt.xticks([0,1,2], ('Cherbourg', 'Queenstown', 'Southampton'))
@@ -369,6 +367,8 @@ plt.show()
 
 <br>
 
+#### SibSp
+
 ```python
 count_bar(merged, 'SibSp', 'dataset')
 plt.savefig('graph/bar_SibSp.png')
@@ -389,6 +389,8 @@ plt.show()
 
 <br>
 
+#### Parch
+
 ```python
 count_bar(merged, 'Parch', 'dataset')
 plt.savefig('graph/bar_Parch.png')
@@ -406,6 +408,37 @@ plt.show()
 ```
 
 ![png](graph/bar_Parch_Survived.png)
+
+<br>
+
+## Split family size
+
+```python
+merged['family_class'] = np.nan
+merged.loc[merged['family'] == 1, 'family_class'] = 1
+merged.loc[merged['family'] > 1, 'family_class'] = 2
+merged.loc[merged['family'] > 4, 'family_class'] = 3
+```
+
+<br>
+
+```python
+count_bar(merged, 'family_class', 'dataset')
+plt.savefig('graph/bar_family_class.png')
+plt.show()
+```
+
+![png](graph/bar_family_class.png)
+
+<br>
+
+```python
+count_bar(merged, 'family_class', 'Survived')
+plt.savefig('graph/bar_family_class_Survived.png')
+plt.show()
+```
+
+![png](graph/bar_family_class_Survived.png)
 
 <br>
 

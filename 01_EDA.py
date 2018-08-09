@@ -1,5 +1,5 @@
 
-# Import ibrary and load data
+# Import library and load data
 import pandas as pd
 import numpy as np
 import re
@@ -7,14 +7,15 @@ import re
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+pd.options.display.max_rows = 999
 
 train = pd.read_csv('train.csv', index_col=['PassengerId'])
 test = pd.read_csv('test.csv', index_col=['PassengerId'])
 
 
 # Explor the data
-print('train shape : ', train.shape)    # (891, 12)
-print('test shape : ', test.shape)      # (418, 11)
+print('train shape : ', train.shape)
+print('test shape : ', test.shape)
 
 print('train columns : ', train.columns)
 print('test columns : ', test.columns)
@@ -26,9 +27,7 @@ print('train info : \n', train.info())
 print('test info: \n', test.info())
 
 print('train missing values : \n', train.isnull().sum())
-# Age : 177, Cabin : 687, Embarked : 2
 print('test missing values : \n', test.isnull().sum())
-# Age : 86, Fare : 1, Cabin : 327
 
 print('train describe : \n', train.describe())
 print('test describe : \n', test.describe())
@@ -55,63 +54,30 @@ test['dataset'] = 'test set'
 
 merged = pd.concat([train, test])
 
-print('merged data shape : ', merged.shape)     # (1309, 12)
+print('merged data shape : ', merged.shape)
 print('merged data columns : ', merged.columns)
 print('merged data head : \n', merged.head())
 print('merged data tail : \n', merged.tail())
 
 
 # Change feature to integer
-def to_number(data):
-    data.loc[data['Sex'] == 'male', 'Sex'] = 0
-    data.loc[data['Sex'] == 'female', 'Sex'] = 1
-    
-    print(data['Sex'].head())
-    
-    data.loc[data['Embarked'] == 'C', 'Embarked'] = 0
-    data.loc[data['Embarked'] == 'Q', 'Embarked'] = 1
-    data.loc[data['Embarked'] == 'S', 'Embarked'] = 2
-    
-    print(data['Embarked'].head())
-    
-    return data
-    
-merged = to_number(merged)
-print(merged[['Sex','Embarked']].head())
-print(merged[['Sex','Embarked']].tail())
-    
+merged.loc[merged['Sex'] == 'male', 'Sex'] = 0
+merged.loc[merged['Sex'] == 'female', 'Sex'] = 1
 
-# Extract the title name
-def title_name(name):
-    n = re.findall(', .{1,15}\.', name)
-    return ' '.join(n)[2:]
-
-merged['title_name'] = np.nan
-merged['title_name'] = merged['Name'].apply(lambda x: title_name(x))
-
-print(merged[['Name', 'title_name']].head())
-print(merged[['Name', 'title_name']].tail())
-del merged['Name']
+print(merged['Sex'].head())
 
 
 #
-def ticket_str(name):
-    n = re.findall('[a-zA-Z]', name)
-    return ' '.join(n)
+merged.loc[merged['Embarked'] == 'C', 'Embarked'] = 0
+merged.loc[merged['Embarked'] == 'Q', 'Embarked'] = 1
+merged.loc[merged['Embarked'] == 'S', 'Embarked'] = 2
 
-merged['ticket_str'] = np.nan
-merged['ticket_str'] = merged['Ticket'].apply(lambda x: ticket_str(x))
-merged['ticket_str'].value_counts()
-
+print(merged['Embarked'].head())
+    
 
 #
-def ticket_int(name):
-    n = re.findall('[0-9]', name)
-    return ''.join(n)
-
-merged['ticket_int'] = np.nan
-merged['ticket_int'] = merged['Ticket'].apply(lambda x: ticket_int(x))
-merged['ticket_int'].value_counts()
+merged['family'] = merged['SibSp'] + merged['Parch'] + 1
+print(merged[['SibSp','Parch','family']].head())
 
 
 # -----------------------------------------------------------------------------
@@ -195,6 +161,31 @@ plt.show()
 
 
 #
+count_bar(merged, 'family', 'dataset')
+plt.savefig('graph/bar_family.png')
+plt.show()
+
+count_bar(merged, 'family', 'Survived')
+plt.savefig('graph/bar_family_Survived.png')
+plt.show()
+
+
+#
+merged['family_class'] = np.nan
+merged.loc[merged['family'] == 1, 'family_class'] = 1
+merged.loc[merged['family'] > 1, 'family_class'] = 2
+merged.loc[merged['family'] > 4, 'family_class'] = 3
+
+count_bar(merged, 'family_class', 'dataset')
+plt.savefig('graph/bar_family_class.png')
+plt.show()
+
+count_bar(merged, 'family_class', 'Survived')
+plt.savefig('graph/bar_family_class_Survived.png')
+plt.show()
+
+
+#
 def countplot(x, hue, **kwargs):
     sns.countplot(x=x, hue=hue, palette='husl')
     
@@ -214,11 +205,24 @@ plt.legend(('male','female')).set_title('Sex')
 plt.savefig('graph/bar_Embarked_Sex_Survived.png')
 plt.show()
 
-bar(merged, 'Embarked', 'Pclass', 'Survived')
-plt.xticks([0,1,2], ('Cherbourg', 'Queenstown', 'Southampton'))
-plt.legend(('1st', '2nd', '3rd')).set_title('Pclass')
-plt.savefig('graph/bar_Embarked_Pclass_Survived.png')
+bar(merged, 'family_class', 'Sex', 'Survived')
+plt.legend(('male', 'female')).set_title('Sex')
+plt.savefig('graph/bar_family_class_Sex_Survived.png')
 plt.show()
+
+
+# -----------------------------------------------------------------------------
+# Extract the title name
+def title_name(name):
+    n = re.findall(', .{1,15}\.', name)
+    return ' '.join(n)[2:]
+
+merged['title_name'] = np.nan
+merged['title_name'] = merged['Name'].apply(lambda x: title_name(x))
+
+print(merged[['Name', 'title_name']].head())
+print(merged[['Name', 'title_name']].tail())
+del merged['Name']
 
 
 #
@@ -414,6 +418,48 @@ test = merged.iloc[891:]
 test.to_csv('test_modify.csv')
 
 merged.to_csv('merged_modify.csv')
+
+
+#
+#
+def cabin(value):
+    return value[0]
+
+merged['Cabin_value'] = np.nan
+merged.loc[merged['Cabin'].notnull(),'Cabin_value'] = merged.loc[merged['Cabin'].notnull(),'Cabin'].apply(lambda x: cabin(x))
+
+merged.groupby(['Cabin_value', 'Pclass', 'Fare'])['Age'].mean()
+merged.groupby(['Cabin_value', 'Pclass'])['Fare'].count()
+merged.groupby(['Pclass','Cabin_value'])['Cabin_value'].count()
+merged.groupby(['Pclass','Cabin_value', 'Ticket'])['Ticket'].count()
+temp = merged['Ticket'].value_counts()
+temp.head()
+
+
+#
+def ticket_str(name):
+    n = re.findall('[a-zA-Z]', name)
+    return ' '.join(n)
+
+merged[['Ticket', 'Cabin','Fare', 'Pclass']]
+merged[merged['Ticket'] == '19950']
+
+merged.groupby(['Ticket', 'Cabin', 'Pclass'])['Fare'].count()
+
+merged['ticket_str'] = np.nan
+merged['ticket_str'] = merged['Ticket'].apply(lambda x: ticket_str(x))
+merged['ticket_str'].value_counts()
+
+
+#
+def ticket_int(name):
+    n = re.findall('[0-9]+', name)
+    return n[-1]
+
+merged['ticket_int'] = np.nan
+merged['ticket_int'] = merged['Ticket'].apply(lambda x: ticket_int(x))
+merged['ticket_int'].value_counts()
+merged['Ticket']
 
 
 #
