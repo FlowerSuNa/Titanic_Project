@@ -252,13 +252,13 @@ merged.loc[merged['Embarked'] == 'S', 'Embarked'] = 2
 
 ## Draw bar graphs
 
-#### Pclass bar graph of train data and test data
+* #### Pclass bar graph of train data and test data
 
 ![png](graph/bar_Pclass.png)
 
 <br>
 
-#### Pclass bar graph of train data per Deceased or Survived
+* #### Pclass bar graph of train data per Deceased or Survived
 
 ![png](graph/bar_Pclass_Survivd.png)
 
