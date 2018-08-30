@@ -214,6 +214,8 @@ merged = pd.concat([train, test])
 
 * Merged Data Shape : (1309, 12)
 
+<br>
+
 ---
 
 ## Change the string value to an integer value
@@ -250,116 +252,10 @@ merged.loc[merged['Embarked'] == 'S', 'Embarked'] = 2
 
 ---
 
-## Draw bar graphs
-
-* #### Pclass bar graph of train data and test data
-
-![png](graph/bar_Pclass.png)
-
-<br>
-
-* #### Pclass bar graph of train data per Deceased or Survived
-
-![png](graph/bar_Pclass_Survivd.png)
-
-<br>
-
-#### Sex
-
-```python
-count_bar(merged, 'Sex', 'dataset')
-plt.xticks([0,1], ('male', 'female'))
-plt.savefig('graph/bar_Sex.png')
-plt.show()
-```
-
-![png](graph/bar_Sex.png)
-
-<br>
-
-```python
-count_bar(merged, 'Sex', 'Survived')
-plt.xticks([0,1], ('male', 'female'))
-plt.savefig('graph/bar_Sex_Survived.png')
-plt.show()
-
-```
-
-![png](graph/bar_Sex_Survived.png)
-
-<br>
-
-#### Embarked
-
-```python
-count_bar(merged, 'Embarked', 'dataset')
-plt.xticks([0,1,2], ('Cherbourg', 'Queenstown', 'Southampton'))
-plt.savefig('graph/bar_Embarked.png')
-plt.show()
-```
-
-![png](graph/bar_Embarked.png)
-
-<br>
-
-```python
-count_bar(merged, 'Embarked', 'Survived')
-plt.xticks([0,1,2], ('Cherbourg', 'Queenstown', 'Southampton'))
-plt.savefig('graph/bar_Embarked_Survived.png')
-plt.show()
-```
-
-![png](graph/bar_Embarked_Survived.png)
 
 <br>
 
 ---
-
-## Draws bar graphs
-
-#### SibSp
-
-```python
-count_bar(merged, 'SibSp', 'dataset')
-plt.savefig('graph/bar_SibSp.png')
-plt.show()
-```
-
-![png](graph/bar_SibSp.png)
-
-<br>
-
-```python
-count_bar(merged, 'SibSp', 'Survived')
-plt.savefig('graph/bar_SibSp_Survived.png')
-plt.show()
-```
-
-![png](graph/bar_SibSp_Survived.png)
-
-<br>
-
-#### Parch
-
-```python
-count_bar(merged, 'Parch', 'dataset')
-plt.savefig('graph/bar_Parch.png')
-plt.show()
-```
-
-![png](graph/bar_Parch.png)
-
-<br>
-
-```python
-count_bar(merged, 'Parch', 'Survived')
-plt.savefig('graph/bar_Parch_Survived.png')
-plt.show()
-```
-
-![png](graph/bar_Parch_Survived.png)
-
-<br>
 
 ## Makes a feature : family
 
