@@ -7,23 +7,6 @@
 
 ---
 
-## Import library and load data
-
-```python
-import pandas as pd
-import numpy as np
-import re
-
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-
-train = pd.read_csv('train.csv', index_col=['PassengerId'])
-test = pd.read_csv('test.csv', index_col=['PassengerId'])
-```
-
-<br>
-
 ## Explor the data
 
 #### Data shape
@@ -46,7 +29,7 @@ test = pd.read_csv('test.csv', index_col=['PassengerId'])
 
 #### Data Type
 
-Train
+* Train
 
 | Feature | Type |
 |---------|------|
@@ -64,7 +47,7 @@ Train
 
 <br>
 
-Test
+* Test
 
 | Feature | Type |
 |---------|------|
@@ -83,7 +66,7 @@ Test
 
 ## Check missing values
 
-Train
+* Train
 
 | Feature | Count |
 |---------|------:|
@@ -93,7 +76,7 @@ Train
 
 <br>
 
-Test
+* Test
 
 | Feature | Count |
 |---------|------:|
@@ -107,7 +90,7 @@ Test
 
 #### Pclass
 
-Train
+* Train
 
 | Level | Count |
 |-------|------:|
@@ -117,7 +100,7 @@ Train
 
 <br>
 
-Test
+* Test
 
 | Level | Count |
 |-------|------:|
@@ -129,7 +112,7 @@ Test
 
 #### Embarked
 
-Train
+* Train
 
 | Level | Count |
 |-------|------:|
@@ -139,7 +122,7 @@ Train
 
 <br>
 
-Test
+* Test
 
 | Level | Count |
 |-------|------:|
@@ -151,7 +134,7 @@ Test
 
 #### SibSp
 
-Train
+* Train
 
 | Level | Count |
 |-------|-------|
@@ -165,7 +148,7 @@ Train
 
 <br>
 
-Test
+* Test
 
 | Level | Count |
 |-------|-------|
@@ -181,7 +164,7 @@ Test
 
 #### Parch
 
-Train
+* Train
 
 | Level | Count |
 |-------|-------|
@@ -195,7 +178,7 @@ Train
 
 <br>
 
-Test
+* Test
 
 | Level | Count |
 |-------|-------|
@@ -226,17 +209,14 @@ Test
 ```python
 train['dataset'] = 'train set'
 test['dataset'] = 'test set'
-
 merged = pd.concat([train, test])
 ```
 
-* merged data shape : (1309, 12)
+* Merged Data Shape : (1309, 12)
 
-* merged data columns : Age, Cabin, Embarked, Fare, Name, Ticket, Parch, Pclass, Sex, SibSp, Survived, dataset
+---
 
-<br>
-
-## Change feature to integer
+## Change the string value to an integer value
 
 #### Sex
 
@@ -244,6 +224,11 @@ merged = pd.concat([train, test])
 merged.loc[merged['Sex'] == 'male', 'Sex'] = 0
 merged.loc[merged['Sex'] == 'female', 'Sex'] = 1
 ```
+
+| String | Integer |
+|--------|---------|
+| male | 0 |
+| female | 1 |
 
 <br>
 
@@ -255,13 +240,11 @@ merged.loc[merged['Embarked'] == 'Q', 'Embarked'] = 1
 merged.loc[merged['Embarked'] == 'S', 'Embarked'] = 2
 ```
 
-<br>
-
-## Makes a feature : family
-
-```python
-merged['family'] = merged['SibSp'] + merged['Parch'] + 1
-```
+| String | Integer |
+|--------|---------|
+| C | 0 |
+| Q | 1 |
+| S | 2 |
 
 <br>
 
@@ -269,50 +252,13 @@ merged['family'] = merged['SibSp'] + merged['Parch'] + 1
 
 ## Draw bar graphs
 
-```python
-def count_bar(data, x, hue):
-    plt.figure(figsize=(10,7))
-    ax = sns.countplot(x=x, hue=hue, data=data, palette='husl')
-    plt.title(x + ' Frequency', fontsize=15)
-    plt.legend(loc='upper right').set_title(hue)
-
-    for p in ax.patches:
-        a = p.get_height()
-        va = 'top'
-        color = 'white'
-
-        if np.isnan(a):
-            a = 0
-
-        if a < 30:
-            va = 'bottom'
-            color = '#C39BD3'
-
-        ax.text(p.get_x() + p.get_width()/2., a, '%d' % int(a),
-                fontsize=12, ha='center', va=va, color=color)
-```
-
-<br>
-
-#### Pclass
-
-```python
-count_bar(merged, 'Pclass', 'dataset')
-plt.xticks([0,1,2], ('1st', '2nd', '3rd'))
-plt.savefig('graph/bar_Pclass.png')
-plt.show()
-```
+#### Pclass bar graph of train data and test data
 
 ![png](graph/bar_Pclass.png)
 
 <br>
 
-```python
-count_bar(merged, 'Pclass', 'Survived')
-plt.xticks([0,1,2], ('1st', '2nd', '3rd'))
-plt.savefig('graph/bar_Pclass_Survivd.png')
-plt.show()
-```
+#### Pclass bar graph of train data per Deceased or Survived
 
 ![png](graph/bar_Pclass_Survivd.png)
 
@@ -367,6 +313,10 @@ plt.show()
 
 <br>
 
+---
+
+## Draws bar graphs
+
 #### SibSp
 
 ```python
@@ -411,6 +361,34 @@ plt.show()
 
 <br>
 
+## Makes a feature : family
+
+```python
+merged['family'] = merged['SibSp'] + merged['Parch'] + 1
+```
+
+<br>
+
+```python
+count_bar(merged, 'family', 'dataset')
+plt.savefig('graph/bar_family.png')
+plt.show()
+```
+
+![png](graph/bar_family.png)
+
+<br>
+
+```python
+count_bar(merged, 'family', 'Survived')
+plt.savefig('graph/bar_family_Survived.png')
+plt.show()
+```
+
+![png](graph/bar_family_Survived.png)
+
+<br>
+
 ## Split family size
 
 ```python
@@ -441,6 +419,10 @@ plt.show()
 ![png](graph/bar_family_class_Survived.png)
 
 <br>
+
+---
+
+## Draw bar graphs per Survived
 
 ```python
 def countplot(x, hue, **kwargs):
@@ -478,16 +460,32 @@ plt.show()
 <br>
 
 ```python
-bar(merged, 'Embarked', 'Pclass', 'Survived')
-plt.xticks([0,1,2], ('Cherbourg', 'Queenstown', 'Southampton'))
-plt.legend(('1st', '2nd', '3rd')).set_title('Pclass')
-plt.savefig('graph/bar_Embarked_Pclass_Survived.png')
+bar(merged, 'family_class', 'Sex', 'Survived')
+plt.legend(('male', 'female')).set_title('Sex')
+plt.savefig('graph/bar_family_class_Sex_Survived.png')
 plt.show()
 ```
 
-![png](graph/bar_Embarked_Pclass_Survived.png)
+![png](graph/bar_family_class_Sex_Survived.png)
 
 <br>
+
+---
+
+## Extract title name
+
+```python
+def title_name(name):
+    n = re.findall(', .{1,15}\.', name)
+    return ' '.join(n)[2:]
+
+merged['title_name'] = np.nan
+merged['title_name'] = merged['Name'].apply(lambda x: title_name(x))
+```
+
+<br>
+
+## Draw title name bar graphs
 
 ```python
 def Name_bar(data, hue):
